@@ -568,6 +568,24 @@
 
         .table-border-style .card-header:last-child { border-bottom: none; }
 
+        /* Indian Calendar */
+        .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        .cal-nav { background: none; border: none; font-size: 20px; cursor: pointer; padding: 5px 10px; border-radius: 8px; color: var(--color-customColor); }
+        .cal-nav:hover { background: #f0f0f0; }
+        .cal-title { font-size: 16px; font-weight: 600; }
+        .cal-table { width: 100%; border-collapse: collapse; }
+        .cal-table th { padding: 8px 5px; font-size: 12px; text-transform: uppercase; color: #6c757d; text-align: center; font-weight: 600; }
+        .cal-table td { padding: 8px 5px; text-align: center; font-size: 13px; cursor: pointer; border-radius: 8px; transition: all 0.15s; }
+        .cal-table td:hover { background: #f0f0f0; }
+        .cal-table td.today { background: var(--color-customColor); color: #fff; font-weight: 600; }
+        .cal-table td.event-day { background: #e8f5e9; font-weight: 600; color: #2e7d32; position: relative; }
+        .cal-table td.event-day::after { content: ""; width: 4px; height: 4px; background: #2e7d32; border-radius: 50%; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); }
+        .cal-table td.other-month { color: #ccc; }
+        .cal-events { margin-top: 12px; padding-top: 10px; border-top: 1px solid #f1f1f1; min-height: 40px; font-size: 13px; }
+        .cal-events .event-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+        .cal-events .event-dot { width: 8px; height: 8px; border-radius: 50%; background: #2e7d32; flex-shrink: 0; }
+        .cal-events .event-date { color: #6c757d; font-size: 11px; min-width: 30px; }
+
         @media (max-width: 1024px) {
             .dash-sidebar { left: -280px; }
             .dash-sidebar.mob-open { left: 0; }
@@ -777,7 +795,18 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div id="event_calendar" class="calendar" style="min-height:300px;"></div>
+                            <div id="event_calendar" class="calendar">
+                            <div class="cal-header">
+                                <button onclick="prevMonth()" class="cal-nav"><i class="ti ti-chevron-left"></i></button>
+                                <span id="calMonthYear" class="cal-title"></span>
+                                <button onclick="nextMonth()" class="cal-nav"><i class="ti ti-chevron-right"></i></button>
+                            </div>
+                            <table class="cal-table">
+                                <thead><tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr></thead>
+                                <tbody id="calBody"></tbody>
+                            </table>
+                            <div id="calEvents" class="cal-events"></div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -893,9 +922,129 @@
     </footer>
 
     <script>
+        // ===== Indian Calendar =====
+        var indianHolidays = {
+            '1-1': 'New Year',
+            '1-14': 'Makar Sankranti / Pongal',
+            '1-26': 'Republic Day',
+            '2-19': 'Maha Shivaratri',
+            '3-14': 'Holi',
+            '3-25': 'Ugadi / Gudi Padwa',
+            '3-31': 'Eid-ul-Fitr',
+            '4-14': 'Baisakhi / Ambedkar Jayanti',
+            '4-17': 'Rama Navami',
+            '5-1': 'Labour Day',
+            '6-7': 'Eid-ul-Adha',
+            '7-6': 'Rath Yatra',
+            '7-17': 'Muharram',
+            '8-15': 'Independence Day',
+            '8-26': 'Janmashtami',
+            '9-7': 'Milad-un-Nabi',
+            '10-1': 'Gandhi Jayanti',
+            '10-2': 'Gandhi Jayanti',
+            '10-7': 'Dussehra / Durga Puja',
+            '10-20': 'Karwa Chauth',
+            '10-25': 'Diwali',
+            '10-26': 'Diwali',
+            '10-27': 'Govardhan Puja',
+            '10-28': 'Bhai Dooj',
+            '10-29': 'Chhath Puja',
+            '11-5': 'Guru Nanak Jayanti',
+            '12-25': 'Christmas',
+            '12-31': 'New Year Eve'
+        };
+        var calCurrentDate = new Date();
+        var calMonth = calCurrentDate.getMonth();
+        var calYear = calCurrentDate.getFullYear();
+
+        function renderCalendar() {
+            var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            document.getElementById('calMonthYear').textContent = monthNames[calMonth] + ' ' + calYear;
+
+            var firstDay = new Date(calYear, calMonth, 1).getDay();
+            var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+            var daysInPrev = new Date(calYear, calMonth, 0).getDate();
+
+            var today = new Date();
+            var tDay = today.getDate(), tMon = today.getMonth(), tYr = today.getFullYear();
+            var tbody = document.getElementById('calBody');
+            tbody.innerHTML = '';
+            var date = 1;
+            var selectedDate = null;
+            var selectedName = null;
+
+            for (var i = 0; i < 6; i++) {
+                var row = document.createElement('tr');
+                for (var j = 0; j < 7; j++) {
+                    var cell = document.createElement('td');
+                    if (i === 0 && j < firstDay) {
+                        cell.textContent = daysInPrev - firstDay + j + 1;
+                        cell.className = 'other-month';
+                    } else if (date > daysInMonth) {
+                        cell.textContent = date - daysInMonth;
+                        cell.className = 'other-month';
+                        date++;
+                    } else {
+                        var d = date;
+                        var key = (calMonth + 1) + '-' + d;
+                        var holidayName = indianHolidays[key];
+                        cell.textContent = d;
+                        if (d === tDay && calMonth === tMon && calYear === tYr) {
+                            cell.className = 'today';
+                        }
+                        if (holidayName) {
+                            cell.className = (cell.className ? cell.className + ' ' : '') + 'event-day';
+                            cell.setAttribute('data-event', holidayName);
+                            cell.setAttribute('data-day', d);
+                            cell.onclick = (function(day, name) {
+                                return function() {
+                                    showEvent(day, name);
+                                };
+                            })(d, holidayName);
+                            if (!selectedDate) { selectedDate = d; selectedName = holidayName; }
+                        } else {
+                            cell.onclick = (function(day) {
+                                return function() {
+                                    showEvent(day, null);
+                                };
+                            })(d);
+                        }
+                        date++;
+                    }
+                    row.appendChild(cell);
+                }
+                tbody.appendChild(row);
+                if (date > daysInMonth) break;
+            }
+            showEvent(selectedDate || tDay, selectedName);
+        }
+
+        function showEvent(day, name) {
+            var el = document.getElementById('calEvents');
+            if (name) {
+                var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                el.innerHTML = '<div class="event-item"><span class="event-dot"></span><strong>' + name + '</strong><span class="event-date">' + day + ' ' + monthNames[calMonth] + '</span></div>';
+            } else {
+                el.innerHTML = '<div class="text-muted">No events for this day</div>';
+            }
+        }
+
+        function prevMonth() {
+            calMonth--;
+            if (calMonth < 0) { calMonth = 11; calYear--; }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            calMonth++;
+            if (calMonth > 11) { calMonth = 0; calYear++; }
+            renderCalendar();
+        }
+
         // Hide loader
         window.addEventListener('load', function() {
             document.getElementById('loader').style.display = 'none';
+            renderCalendar();
         });
 
         // Toggle sidebar on mobile
