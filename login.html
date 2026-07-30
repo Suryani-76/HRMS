@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="">
 <head>
-    <title>sample - Login</title>
+    <title>OKLUT - Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
@@ -79,6 +79,18 @@
         }
 
         .custom-login .bg-primary { background: transparent; }
+
+        .company-overlay {
+            position: absolute;
+            top: 50%;
+            left: 25%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            color: #fff;
+            text-align: center;
+        }
+        .company-overlay h1 { font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .company-overlay p { font-size: 1.1rem; opacity: 0.9; }
 
         .custom-login .navbar {
             background: var(--bs-white);
@@ -214,6 +226,10 @@
 <body class="theme-3">
     <div class="custom-login" style="background: url(https://www.bonardeducation.com/uploads/wysiwyg-upload/source-market-webinar-india-pic-blue_1.png);background-position: left;background-size: cover;">
         <div class="bg-login bg-primary"></div>
+        <div class="company-overlay">
+            <h1>OKLUT</h1>
+            <p>Human Resource Management System</p>
+        </div>
         <div class="custom-login-inner">
             <header class="dash-header">
                 <nav class="navbar navbar-expand-md default">
@@ -221,7 +237,7 @@
                         <div class="navbar-brand">
                             <a href="#">
                                 <img src="https://hrm.oklut.com/storage/uploads/logo/logo-dark.png?1785397827"
-                                    class="logo" alt="sample" loading="lazy" style="max-height: 50px;">
+                                    class="logo" alt="OKLUT" loading="lazy" style="max-height: 50px;">
                             </a>
                         </div>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -288,7 +304,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                <span>&copy; 2026 sample</span>
+                                <span>&copy; 2026 OKLUT</span>
                             </div>
                         </div>
                     </div>
