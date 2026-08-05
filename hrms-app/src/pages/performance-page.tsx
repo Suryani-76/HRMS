@@ -184,6 +184,7 @@ function ReviewsTab() {
   const [goals, setGoals] = useState('')
   const [comments, setComments] = useState('')
   const [rating, setRating] = useState(0)
+  const [cycleLevel, setCycleLevel] = useState('1')
 
   function currentQuarter() {
     const now = new Date()
@@ -193,9 +194,9 @@ function ReviewsTab() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!employeeId || !period) return
-    await create.mutateAsync({ employee_id: employeeId, period, goals: goals || undefined, comments: comments || undefined, rating: rating || undefined })
+    await create.mutateAsync({ employee_id: employeeId, period, goals: goals || undefined, comments: comments || undefined, rating: rating || undefined, cycle_level: Number(cycleLevel) } as any)
     setDialog(false)
-    setEmployeeId(''); setGoals(''); setComments(''); setRating(0)
+    setEmployeeId(''); setGoals(''); setComments(''); setRating(0); setCycleLevel('1')
   }
 
   return (
@@ -221,8 +222,11 @@ function ReviewsTab() {
                   <div>
                     <p className="font-medium">
                       {r.employee?.first_name} {r.employee?.last_name}
+                      {r.cycle_level === 3 && r.rating && r.rating <= 2 && (
+                        <span className="ml-2 px-2 py-0.5 rounded text-xs font-semibold bg-red-100 text-red-700 border border-red-200">Exit Warning</span>
+                      )}
                     </p>
-                    <p className="text-xs text-muted-foreground">{r.period} · {formatDate(r.review_date ?? r.created_at)}</p>
+                    <p className="text-xs text-muted-foreground">{r.period} · Cycle Level: {r.cycle_level || 1} · {formatDate(r.review_date ?? r.created_at)}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     {r.rating != null && <RatingStars value={r.rating} />}
@@ -259,6 +263,17 @@ function ReviewsTab() {
               <div className="space-y-2">
                 <Label>Period *</Label>
                 <Input value={period} onChange={(e) => setPeriod(e.target.value)} placeholder="Q3 2026" required />
+              </div>
+              <div className="space-y-2">
+                <Label>Cycle Level</Label>
+                <Select value={cycleLevel} onValueChange={setCycleLevel}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Level 1 (Standard)</SelectItem>
+                    <SelectItem value="2">Level 2 (Warning)</SelectItem>
+                    <SelectItem value="3">Level 3 (Final/Exit)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className="space-y-2">

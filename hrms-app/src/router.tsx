@@ -25,6 +25,11 @@ const NotificationsPage = lazy(() => import('@/pages/notifications-page'))
 const ProfilePage = lazy(() => import('@/pages/profile-page'))
 const SettingsPage = lazy(() => import('@/pages/settings-page'))
 const PayslipsPage = lazy(() => import('@/pages/payslips-page'))
+const CareersPage = lazy(() => import('@/pages/careers-page'))
+const CandidatePortalPage = lazy(() => import('@/pages/candidate-portal'))
+const InsuranceEnrollmentPage = lazy(() => import('@/pages/insurance-enrollment-page'))
+const AssetsPage = lazy(() => import('@/pages/assets-page'))
+const IncentivesDashboardPage = lazy(() => import('@/pages/incentives-dashboard-page'))
 const NotFoundPage = lazy(() => import('@/pages/not-found-page'))
 
 function withSuspense(node: React.ReactNode) {
@@ -46,6 +51,8 @@ export const router = createBrowserRouter(
     <>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/careers" element={withSuspense(<CareersPage />)} />
+      <Route path="/candidate-portal" element={withSuspense(<CandidatePortalPage />)} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
@@ -67,6 +74,9 @@ export const router = createBrowserRouter(
           <Route path="notifications" element={withSuspense(<NotificationsPage />)} />
           <Route path="profile" element={withSuspense(<ProfilePage />)} />
           <Route path="settings" element={withSuspense(<SettingsPage />)} />
+          <Route path="insurance-enrollment" element={withSuspense(<InsuranceEnrollmentPage />)} />
+          <Route path="assets" element={withSuspense(<AssetsPage />)} />
+          <Route path="incentives" element={withSuspense(<IncentivesDashboardPage />)} />
           <Route
             path="audit-logs"
             element={<ProtectedRoute adminOnly>{withSuspense(<AuditLogsPage />)}</ProtectedRoute>}

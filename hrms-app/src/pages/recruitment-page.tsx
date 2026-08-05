@@ -277,8 +277,8 @@ function CandidatesTab() {
                 <tr className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
                   <th className="px-4 py-3">Candidate</th>
                   <th className="px-4 py-3">Applied For</th>
+                  <th className="px-4 py-3">ATS Score</th>
                   <th className="px-4 py-3">Source</th>
-                  <th className="px-4 py-3">Applied</th>
                   <th className="px-4 py-3">Stage</th>
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
@@ -288,11 +288,20 @@ function CandidatesTab() {
                   <tr key={c.id} className="border-b last:border-0">
                     <td className="px-4 py-2.5">
                       <p className="font-medium">{c.name}</p>
-                      <p className="text-xs text-muted-foreground">{c.email}{c.phone ? ` · ${c.phone}` : ''}</p>
+                      <p className="text-xs text-muted-foreground">{c.email}</p>
+                      {c.reference_id && <p className="text-xs text-muted-foreground">Ref: {c.reference_id}</p>}
                     </td>
                     <td className="px-4 py-2.5">{c.job_opening?.title ?? '—'}</td>
+                    <td className="px-4 py-2.5">
+                      {c.ats_score ? (
+                        <div className="flex items-center gap-1">
+                          <span className={`font-semibold ${c.ats_score > 80 ? 'text-green-600' : c.ats_score > 60 ? 'text-yellow-600' : 'text-red-600'}`}>
+                            {c.ats_score}
+                          </span>
+                        </div>
+                      ) : '—'}
+                    </td>
                     <td className="px-4 py-2.5">{c.source ?? '—'}</td>
-                    <td className="px-4 py-2.5 text-muted-foreground">{formatDate(c.applied_at)}</td>
                     <td className="px-4 py-2.5">
                       <Select value={c.status ?? 'Applied'} onValueChange={(v) => updateStatus.mutate({ id: c.id, status: v })}>
                         <SelectTrigger className="h-8 w-36"><SelectValue /></SelectTrigger>
@@ -449,6 +458,7 @@ function InterviewsTab() {
                   <th className="px-4 py-3">Scheduled</th>
                   <th className="px-4 py-3">Mode</th>
                   <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Malpractice</th>
                   <th className="px-4 py-3">Rating</th>
                 </tr>
               </thead>
@@ -472,6 +482,13 @@ function InterviewsTab() {
                           <SelectItem value="cancelled">Cancelled</SelectItem>
                         </SelectContent>
                       </Select>
+                    </td>
+                    <td className="px-4 py-2.5">
+                      {i.malpractice_flag ? (
+                        <span className="text-red-600 font-semibold bg-red-100 px-2 py-1 rounded">Flagged</span>
+                      ) : (
+                        <span className="text-muted-foreground">Clear</span>
+                      )}
                     </td>
                     <td className="px-4 py-2.5">{i.rating ? `${i.rating}/5` : '—'}</td>
                   </tr>
@@ -619,6 +636,7 @@ function OffersTab() {
                   <th className="px-4 py-3">Position</th>
                   <th className="px-4 py-3">Salary offered</th>
                   <th className="px-4 py-3">Joining date</th>
+                  <th className="px-4 py-3">Response</th>
                   <th className="px-4 py-3">Status</th>
                 </tr>
               </thead>
@@ -629,6 +647,13 @@ function OffersTab() {
                     <td className="px-4 py-2.5">{o.job_opening?.title ?? '—'}</td>
                     <td className="px-4 py-2.5">{o.salary_offered ? formatCurrency(o.salary_offered, true) : '—'}</td>
                     <td className="px-4 py-2.5">{o.joining_date ? formatDate(o.joining_date) : '—'}</td>
+                    <td className="px-4 py-2.5">
+                      {o.candidate_response ? (
+                        <StatusPill status={o.candidate_response} />
+                      ) : (
+                        <span className="text-muted-foreground text-xs">Waiting</span>
+                      )}
+                    </td>
                     <td className="px-4 py-2.5">
                       <Select value={o.status ?? 'issued'} onValueChange={(v) => updateStatus.mutate({ id: o.id, status: v })}>
                         <SelectTrigger className="h-8 w-36"><SelectValue /></SelectTrigger>

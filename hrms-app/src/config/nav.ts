@@ -15,6 +15,9 @@ import {
   FileBarChart,
   Bell,
   ShieldCheck,
+  Award,
+  HeartPulse,
+  Laptop,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -42,6 +45,7 @@ export const adminNav: NavSection[] = [
       { title: 'Employees', to: '/employees', icon: Users },
       { title: 'Departments', to: '/departments', icon: Building2 },
       { title: 'Recruitment', to: '/recruitment', icon: Briefcase },
+      { title: 'Incentives', to: '/incentives', icon: Award },
     ],
   },
   {
@@ -58,8 +62,10 @@ export const adminNav: NavSection[] = [
     title: 'Resources',
     items: [
       { title: 'Documents', to: '/documents', icon: FolderOpen },
+      { title: 'Assets', to: '/assets', icon: Laptop },
       { title: 'Announcements', to: '/announcements', icon: Megaphone },
       { title: 'Holidays', to: '/holidays', icon: CalendarDays },
+      { title: 'Insurance', to: '/insurance-enrollment', icon: HeartPulse },
     ],
   },
   {
@@ -84,6 +90,7 @@ export const employeeNav: NavSection[] = [
       { title: 'My Payslips', to: '/payslips', icon: Banknote },
       { title: 'My Tasks', to: '/tasks', icon: ListChecks },
       { title: 'My Documents', to: '/documents', icon: FolderOpen },
+      { title: 'My Assets', to: '/assets', icon: Laptop },
       { title: 'My Performance', to: '/performance', icon: Star },
       { title: 'My Profile', to: '/profile', icon: Users },
     ],
@@ -93,6 +100,7 @@ export const employeeNav: NavSection[] = [
     items: [
       { title: 'Announcements', to: '/announcements', icon: Megaphone },
       { title: 'Holidays', to: '/holidays', icon: CalendarDays },
+      { title: 'Insurance', to: '/insurance-enrollment', icon: HeartPulse },
     ],
   },
 ]

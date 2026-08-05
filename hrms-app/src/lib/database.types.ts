@@ -57,6 +57,7 @@ export interface Employee {
   manager_id?: string | null
   status?: string | null
   profile_picture_url?: string | null
+  branch?: string | null
   created_at: string
   updated_at: string
   department?: Department | null
@@ -251,6 +252,7 @@ export interface PerformanceReview {
   comments?: string | null
   status?: string | null
   review_date?: string | null
+  cycle_level?: number
   created_at: string
   updated_at: string
   employee?: Employee | null
@@ -283,6 +285,9 @@ export interface Candidate {
   status?: string | null
   source?: string | null
   converted_employee_id?: string | null
+  reference_id?: string | null
+  referred_by?: string | null
+  ats_score?: number | null
   applied_at: string
   updated_at: string
   job_opening?: JobOpening | null
@@ -301,6 +306,7 @@ export interface Interview {
   status?: string | null
   feedback?: string | null
   rating?: number | null
+  malpractice_flag?: boolean
   created_at: string
   candidate?: Candidate | null
   job_opening?: JobOpening | null
@@ -315,6 +321,9 @@ export interface Offer {
   salary_offered?: number | null
   joining_date?: string | null
   status?: string | null
+  candidate_response?: string | null
+  relocation_agreed?: boolean | null
+  bond_agreed?: boolean | null
   issued_by?: string | null
   created_at: string
   candidate?: Candidate | null
@@ -328,6 +337,61 @@ export interface AuditLog {
   entity_type?: string | null
   entity_id?: string | null
   details?: Record<string, unknown> | null
+  created_at: string
+}
+
+// --- New Roadmap Types ---
+export interface RecruiterIncentive {
+  id: string
+  recruiter_id: string
+  month: string
+  it_hires: number
+  non_it_hires: number
+  salary_bonus: number
+  gift_points: number
+  created_at: string
+}
+
+export interface InsuranceEnrollment {
+  id: string
+  employee_id: string
+  employer_info?: string | null
+  policy_info?: string | null
+  residential_address?: string | null
+  nominee_name?: string | null
+  nominee_relation?: string | null
+  nominee_dob?: string | null
+  nominee_share?: number | null
+  existing_insurance_details?: string | null
+  emergency_contact_name?: string | null
+  emergency_contact_phone?: string | null
+  bank_name?: string | null
+  bank_account?: string | null
+  ifsc_code?: string | null
+  declaration_signed: boolean
+  declaration_date?: string | null
+  created_at: string
+}
+
+export interface Asset {
+  id: string
+  type: string
+  serial_number?: string | null
+  assigned_to?: string | null
+  status: string
+  assigned_at?: string | null
+  created_at: string
+}
+
+export interface AssetIncident {
+  id: string
+  asset_id: string
+  employee_id: string
+  incident_type: string
+  report?: string | null
+  penalty_charge: number
+  status: string
+  hr_sign_off?: string | null
   created_at: string
 }
 
@@ -360,6 +424,10 @@ export interface Database {
       interviews: { Row: Interview }
       offers: { Row: Offer }
       audit_logs: { Row: AuditLog }
+      recruiter_incentives: { Row: RecruiterIncentive }
+      insurance_enrollments: { Row: InsuranceEnrollment }
+      assets: { Row: Asset }
+      asset_incidents: { Row: AssetIncident }
     }
   }
 }
